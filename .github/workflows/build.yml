@@ -1,4 +1,4 @@
-name: Build Single File EXE
+name: Build Portable EXE (.NET 4.8)
 
 on:
   push:
@@ -12,16 +12,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup .NET 8
+      - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
 
-      - name: Publish Single File EXE
-        run: dotnet publish WinServiceOptimizer.csproj -c Release -o ./publish
+      - name: Build Portable EXE
+        run: dotnet build WinServiceOptimizer.csproj -c Release -o ./publish
 
       - name: Upload EXE Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: WinServiceOptimizer-win-x64
+          name: WinServiceOptimizer-Portable
           path: ./publish/WinServiceOptimizer.exe
