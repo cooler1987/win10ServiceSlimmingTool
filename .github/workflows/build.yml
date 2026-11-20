@@ -1,0 +1,27 @@
+name: Build Single File EXE
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Publish Single File EXE
+        run: dotnet publish WinServiceOptimizer.csproj -c Release -o ./publish
+
+      - name: Upload EXE Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: WinServiceOptimizer-win-x64
+          path: ./publish/WinServiceOptimizer.exe
