@@ -19,9 +19,16 @@ namespace WinServiceOptimizer
 {
     static class Program
     {
+        [DllImport("user32.dll")]
+        private static extern bool SetProcessDpiAwarenessContext(IntPtr value);
+
+        [DllImport("user32.dll")]
+        private static extern bool SetProcessDPIAware();
+
         [STAThread]
         static void Main()
         {
+            EnableDpiAwareness();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
@@ -32,6 +39,20 @@ namespace WinServiceOptimizer
             }
 
             Application.Run(new MainForm());
+        }
+
+        static void EnableDpiAwareness()
+        {
+            try
+            {
+                // -4 代表 PerMonitorV2（Win10 1703+ 支持），失败或老系统自动降级
+                if (!SetProcessDpiAwarenessContext(new IntPtr(-4)))
+                    SetProcessDPIAware();
+            }
+            catch
+            {
+                try { SetProcessDPIAware(); } catch { }
+            }
         }
 
         static bool IsAdministrator()
